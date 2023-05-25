@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "245355388581",
+    "project_id": "bank-ee7fd",
+    "storage_bucket": "bank-ee7fd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:245355388581:android:60189449273f575c96374c",
+        "android_client_info": {
+          "package_name": "com.example.bank_flutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "245355388581-8fl07t3bln43nstt1supfb3ccjevpjvr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJ9XMfnU468eeLq5A3bsi1myGZx4Hthmc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "245355388581-8fl07t3bln43nstt1supfb3ccjevpjvr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
