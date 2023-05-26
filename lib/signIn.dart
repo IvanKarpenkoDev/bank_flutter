@@ -1,4 +1,5 @@
-import 'package:bank_flutter/home.dart';
+
+import 'package:bank_flutter/homepage.dart';
 import 'package:bank_flutter/signUp.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -141,7 +142,7 @@ class _SignInPageNewState extends State<SignInPageNew> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => MySample()));
+                                    builder: (context) => HomePage()));
                           } on FirebaseException catch (e) {
                             final snackBar = SnackBar(
                                 content: const Text("Ошибка авторизации"),

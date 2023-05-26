@@ -5,7 +5,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'firebase_options.dart';
-import 'home.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,11 +20,11 @@ class MainApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'SchoolDis',
       darkTheme: ThemeData.dark().copyWith(textTheme: const TextTheme()),
-      theme: ThemeData.dark(),
-      //  home: FirebaseAuth.instance.currentUser == null
-      //       ?  SignInPageNew()
-      //       :  MySample(),
-      home: HomePage(),
+      theme: ThemeData.light(),
+       home: FirebaseAuth.instance.currentUser == null
+            ?  SignInPageNew()
+            :  HomePage(),
+      // home: HomePage(),
     );
   }
 }
