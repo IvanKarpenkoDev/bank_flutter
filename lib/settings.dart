@@ -1,3 +1,4 @@
+import 'package:bank_flutter/reach_us.dart';
 import 'package:bank_flutter/signIn.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -89,7 +90,13 @@ class _SettingsPage1State extends State<SettingsPage1> {
                   _CustomListTile(
                     title: "Поддержка",
                     icon: Icons.contact_support_outlined,
-                    funct: () {},
+                    funct: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ReachUs())
+                      );
+                    },
                   ),
                 ],
               ),

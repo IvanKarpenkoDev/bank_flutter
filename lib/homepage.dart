@@ -1,8 +1,11 @@
+import 'package:bank_flutter/card_add.dart';
 import 'package:bank_flutter/pageCard.dart';
+import 'package:bank_flutter/qr_page.dart';
 import 'package:bank_flutter/settings.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -22,14 +25,18 @@ class _HomePageState extends State<HomePage> {
         ),
         actions: <Widget>[
           IconButton(
-            icon: const Icon(Icons.settings, color: Color.fromARGB(255, 76, 0, 130),size: 30,),
+            icon: const Icon(
+              Icons.settings,
+              color: Color.fromARGB(255, 76, 0, 130),
+              size: 30,
+            ),
             onPressed: () {
-               Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SettingsPage1(),
-                            ),
-                          );
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SettingsPage1(),
+                ),
+              );
             },
           ),
         ],
@@ -43,6 +50,10 @@ class _HomePageState extends State<HomePage> {
 }
 
 class CardList extends StatelessWidget {
+  String? selectedCardId;
+   final String link = 'https://t.me/kr_vanya';
+  
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
@@ -68,6 +79,9 @@ class CardList extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 itemCount: documents.length,
                 itemBuilder: (BuildContext context, int index) {
+                  selectedCardId =
+                      documents[index].id; // Use the index variable
+
                   Map<String, dynamic> data =
                       documents[index].data() as Map<String, dynamic>;
 
@@ -82,11 +96,24 @@ class CardList extends StatelessWidget {
 
                   return Container(
                     width: 365, // Set the width for each card
-                    child: CardItem(
+                    child: GestureDetector(
+                      onTap: () {
+                        selectedCardId = documents[index].id;
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                CardPage(IdCard: selectedCardId),
+                          ),
+                        );
+                      },
+                      child: CardItem(
                         cardNumber: data['cardNumber'],
                         cardHolderName: data['cardHolderName'],
                         expiryDate: data['expiryDate'],
-                        cardType: cardType),
+                        cardType: cardType,
+                      ),
+                    ),
                   );
                 },
               ),
@@ -110,7 +137,7 @@ class CardList extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const CardPage(),
+                              builder: (context) => const Card_Add(),
                             ),
                           );
                         },
@@ -167,10 +194,10 @@ class CardList extends StatelessWidget {
                       ),
                       GestureDetector(
                         onTap: () {
-                          Navigator.push(
+                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const CardPage(),
+                              builder: (context) => QRCodePage(),
                             ),
                           );
                         },
@@ -190,7 +217,7 @@ class CardList extends StatelessWidget {
                                 Padding(
                                   padding: EdgeInsets.only(left: 15),
                                   child: Icon(
-                                    Icons.add_circle_outline,
+                                    Icons.qr_code,
                                     size: 35,
                                     color: Color.fromARGB(255, 76, 0, 130),
                                   ),
@@ -206,76 +233,16 @@ class CardList extends StatelessWidget {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "Оформить",
+                                        "QR-код",
                                         style: TextStyle(fontSize: 17),
                                       ),
                                       SizedBox(
-                                        height: 4,
+                                        height: 2,
                                       ),
                                       Text(
-                                        "Карту и тд.",
+                                        "Сгенерировать QR код аккаунта банка",
                                         style: TextStyle(
-                                            fontSize: 14, color: Colors.grey),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const CardPage(),
-                            ),
-                          );
-                        },
-                        child: Card(
-                          elevation: 4.0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.0),
-                          ),
-                          child: Container(
-                            height: 150,
-                            width:
-                                155, // Установите желаемую высоту для карточки
-                            padding: EdgeInsets.only(top: 15, bottom: 30),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(left: 15),
-                                  child: Icon(
-                                    Icons.add_circle_outline,
-                                    size: 35,
-                                    color: Color.fromARGB(255, 76, 0, 130),
-                                  ),
-                                ),
-                                Padding(padding: EdgeInsets.only(top: 20)),
-                                Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(12.0),
-                                  ),
-                                  padding: EdgeInsets.only(left: 15),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Оформить",
-                                        style: TextStyle(fontSize: 17),
-                                      ),
-                                      SizedBox(
-                                        height: 4,
-                                      ),
-                                      Text(
-                                        "Карту и тд.",
-                                        style: TextStyle(
-                                            fontSize: 14, color: Colors.grey),
+                                            fontSize: 12, color: Colors.grey),
                                       ),
                                     ],
                                   ),
@@ -287,13 +254,17 @@ class CardList extends StatelessWidget {
                       ),
                     ],
                   )),
-            )
+
+            ),
+            Container()
           ],
         );
       },
     );
   }
+  
 }
+
 
 enum CardType { visa, mastercard }
 
@@ -323,96 +294,173 @@ class CardItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-        child: Column(
-      children: [
-        Container(
-          child: Card(
-            elevation: 4.0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.0),
-            ),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const CardPage(),
-                  ),
-                );
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12.0),
-                  gradient: LinearGradient(
-                    colors: [
-                      Color.fromARGB(155, 14, 0, 35),
-                      Color.fromARGB(120, 58, 0, 100),
-                      Color.fromARGB(159, 81, 0, 138),
-                      Color.fromARGB(168, 57, 0, 97),
-                      Color.fromARGB(142, 17, 0, 34),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                ),
-                padding:
-                    EdgeInsets.only(bottom: 16, top: 10, left: 16, right: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Image.asset(
-                      cardTypeIcon,
-                      width: 53,
-                      height: 53,
-                    ),
-                    SizedBox(height: 5.0),
-                    Text(
-                      cardNumber,
-                      style: TextStyle(
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.w300,
-                          letterSpacing: 3),
-                    ),
-                    SizedBox(height: 16.0),
-                    Text(
-                      'Владелец',
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.grey,
-                      ),
-                    ),
-                    Text(
-                      cardHolderName,
-                      style: TextStyle(fontSize: 18.0),
-                    ),
-                    SizedBox(height: 16.0),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Срок действия',
-                          style: TextStyle(
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.grey,
-                          ),
-                        ),
-                        Text(
-                          expiryDate,
-                          style: TextStyle(fontSize: 18.0),
-                        ),
+    if (cardType == CardType.visa) {
+      return SingleChildScrollView(
+          child: Column(
+        children: [
+          Container(
+            child: Card(
+              elevation: 4.0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+              child: GestureDetector(
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12.0),
+                    gradient: LinearGradient(
+                      colors: [
+                        Color.fromARGB(155, 8, 0, 35),
+                        Color.fromARGB(120, 0, 0, 100),
+                        Color.fromARGB(159, 0, 11, 138),
+                        Color.fromARGB(168, 21, 0, 97),
+                        Color.fromARGB(142, 3, 0, 34),
                       ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
-                  ],
+                  ),
+                  padding:
+                      EdgeInsets.only(bottom: 16, top: 10, left: 16, right: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Image.asset(
+                        cardTypeIcon,
+                        width: 53,
+                        height: 53,
+                      ),
+                      SizedBox(height: 5.0),
+                      Text(
+                        cardNumber,
+                        style: TextStyle(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.w300,
+                            letterSpacing: 3),
+                      ),
+                      SizedBox(height: 16.0),
+                      Text(
+                        'Владелец',
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      Text(
+                        cardHolderName,
+                        style: TextStyle(fontSize: 18.0),
+                      ),
+                      SizedBox(height: 16.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Срок действия',
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          Text(
+                            expiryDate,
+                            style: TextStyle(fontSize: 18.0),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-      ],
-    ));
+        ],
+      ));
+    } else {
+      return SingleChildScrollView(
+          child: Column(
+        children: [
+          Container(
+            child: Card(
+              elevation: 4.0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+              child: GestureDetector(
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12.0),
+                    gradient: LinearGradient(
+                      colors: [
+                        Color.fromARGB(155, 14, 0, 35),
+                        Color.fromARGB(120, 58, 0, 100),
+                        Color.fromARGB(159, 81, 0, 138),
+                        Color.fromARGB(168, 57, 0, 97),
+                        Color.fromARGB(142, 17, 0, 34),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                  ),
+                  padding:
+                      EdgeInsets.only(bottom: 16, top: 10, left: 16, right: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Image.asset(
+                        cardTypeIcon,
+                        width: 53,
+                        height: 53,
+                      ),
+                      SizedBox(height: 5.0),
+                      Text(
+                        cardNumber,
+                        style: TextStyle(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.w300,
+                            letterSpacing: 3),
+                      ),
+                      SizedBox(height: 16.0),
+                      Text(
+                        'Владелец',
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      Text(
+                        cardHolderName,
+                        style: TextStyle(fontSize: 18.0),
+                      ),
+                      SizedBox(height: 16.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Срок действия',
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          Text(
+                            expiryDate,
+                            style: TextStyle(fontSize: 18.0),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ));
+    }
   }
 
   String _buildCardTypeIcon() {
